@@ -2,10 +2,20 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-module "vpc" {
-  source = "../../"
+resource "aws_subnet" "test" {
+  vpc_id     = module.vpc.vpc_id
+  cidr_block = "10.0.4.0/24"
 
-  name = "simple-example"
+  tags = {
+    Name = "Test"
+  }
+}
+
+// The purpose of `var.create_vpc` provide the no-op so that you can turn off this module, to test the module which depends on this module
+module "vpc" {
+  source     = "../../"
+  create_vpc = false
+  name       = "simple-example"
 
   cidr = "10.0.0.0/16"
 
